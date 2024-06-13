@@ -1,6 +1,6 @@
 ---
 title: 'My Journey to Starting a Web Development and Hosting Business: Lyle/Dev'
-date: '06-12-2024'
+date: '06-13-2024'
 ---
 
 In today's digital landscape, every business needs a strong online presence to thrive. Recognizing this demand, I embarked on a journey to create Lyle/Dev, a web development and hosting business dedicated to helping businesses succeed online. Here’s my story and the steps I took to turn this vision into reality.
