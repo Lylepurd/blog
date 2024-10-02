@@ -1,11 +1,8 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 
-let prisma: PrismaClient;
-
-if (!prisma) {
-  prisma = new PrismaClient();
-}
+// Create a singleton instance of PrismaClient
+const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
   try {
@@ -35,5 +32,7 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error('Error creating post:', error); // Log full error for debugging
     return NextResponse.json({ error: 'An error occurred while creating the post' }, { status: 500 });
+  } finally {
+    await prisma.$disconnect(); // Disconnect Prisma Client after request is complete
   }
 }
