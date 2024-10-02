@@ -5,10 +5,26 @@ import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { solarizedlight } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { ReactNode } from 'react';
 
 // Import for HTML tag stripping
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
+
+const CustomComponents = {
+  h1: ({ children, ...props }: React.HTMLProps<HTMLHeadingElement>) => (
+    <h1 className="text-3xl font-bold my-4" {...props}>{children}</h1>
+  ),
+  h2: ({ children, ...props }: React.HTMLProps<HTMLHeadingElement>) => (
+    <h2 className="text-2xl font-bold my-3" {...props}>{children}</h2>
+  ),
+  h3: ({ children, ...props }: React.HTMLProps<HTMLHeadingElement>) => (
+    <h3 className="text-xl font-semibold my-2" {...props}>{children}</h3>
+  ),
+  p: ({ children, ...props }: React.HTMLProps<HTMLParagraphElement>) => (
+    <p className="my-2" {...props}>{children}</p>
+  ),
+};
 
 export default async function PostPage({ params }: { params: { postId: string } }) {
   const { postId } = params;
@@ -40,12 +56,6 @@ export default async function PostPage({ params }: { params: { postId: string } 
         </SyntaxHighlighter>
       );
     },
-    h1: ({ children }) => <h1 className="text-3xl font-bold my-4">{children}</h1>,
-    h2: ({ children }) => <h2 className="text-2xl font-bold my-3">{children}</h2>,
-    h3: ({ children }) => <h3 className="text-xl font-semibold my-2">{children}</h3>,
-    p: ({ children }) => <p className="my-2">{children}</p>,
-    ul: ({ children }) => <ul className="list-disc pl-5 my-2">{children}</ul>,
-    li: ({ children }) => <li className="my-1">{children}</li>,
   };
 
   return (
@@ -55,7 +65,10 @@ export default async function PostPage({ params }: { params: { postId: string } 
         {getFormattedDate(post.date)}
       </time>
       <div className="prose prose-invert mb-4">
-        <ReactMarkdown components={renderers} rehypePlugins={[rehypeRaw, rehypeSanitize]}>
+        <ReactMarkdown 
+          components={{ ...renderers, ...CustomComponents }} 
+          rehypePlugins={[rehypeRaw, rehypeSanitize]}
+        >
           {post.content}
         </ReactMarkdown>
       </div>

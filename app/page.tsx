@@ -5,7 +5,7 @@ import { getSortedPostsData } from "@/lib/db"; // Import the function to fetch p
 export default async function Home() {
   console.log("Fetching posts..."); // Log to confirm function execution
 
-  let posts = [];
+  let posts: { id: string; title: string; date: string; }[] | null = [];
   try {
     posts = await getSortedPostsData(); // Fetch posts using Prisma
     console.log("Posts fetched successfully:", posts); // Log the fetched posts
