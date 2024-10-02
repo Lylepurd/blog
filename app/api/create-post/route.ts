@@ -1,29 +1,39 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
+let prisma: PrismaClient;
+
+if (!prisma) {
+  prisma = new PrismaClient();
+}
 
 export async function POST(req: Request) {
   try {
     const { title, content, date } = await req.json();
 
+    // Check for required fields
     if (!title || !content || !date) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
+    // Ensure the date is valid
+    const parsedDate = new Date(date);
+    if (isNaN(parsedDate.getTime())) {
+      return NextResponse.json({ error: 'Invalid date format' }, { status: 400 });
+    }
+
+    // Create a new post
     const newPost = await prisma.post.create({
       data: {
         title,
         content,
-        date: new Date(date),
+        date: parsedDate,
       },
     });
 
     return NextResponse.json({ message: 'Post created successfully!', post: newPost }, { status: 201 });
   } catch (error) {
-    console.error('Error creating post:', error);
+    console.error('Error creating post:', error); // Log full error for debugging
     return NextResponse.json({ error: 'An error occurred while creating the post' }, { status: 500 });
-  } finally {
-    await prisma.$disconnect();
   }
 }
