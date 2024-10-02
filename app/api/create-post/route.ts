@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 
 // Create a singleton instance of PrismaClient
 const prisma = new PrismaClient();
@@ -30,9 +30,14 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ message: 'Post created successfully!', post: newPost }, { status: 201 });
   } catch (error) {
-    console.error('Error creating post:', error); // Log full error for debugging
+    console.error('Error creating post:', error);
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      // Handle known Prisma errors
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
     return NextResponse.json({ error: 'An error occurred while creating the post' }, { status: 500 });
   } finally {
     await prisma.$disconnect(); // Disconnect Prisma Client after request is complete
   }
 }
+
